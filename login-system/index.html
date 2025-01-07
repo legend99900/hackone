@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع للنشر</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .post-form input, .post-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .post-form textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .post-form input[type="file"] {
+            padding: 5px;
+        }
+
+        .post-form button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .post-form button:hover {
+            background-color: #45a049;
+        }
+
+        .posts {
+            margin-top: 20px;
+        }
+
+        .post {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .post img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .post p {
+            margin: 0;
+        }
+
+        .post .author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>موقع النشر</header>
+    <div class="container">
+        <div class="post-form">
+            <input type="text" id="authorName" placeholder="اسم الناشر" />
+            <textarea id="postContent" placeholder="اكتب ما تريد نشره..."></textarea>
+            <input type="file" id="postImage" accept="image/*" />
+            <button onclick="addPost()">نشر</button>
+        </div>
+        <div class="posts" id="postsContainer">
+            <!-- المشاركات ستظهر هنا -->
+        </div>
+    </div>
+
+    <script>
+        // جلب المنشورات المخزنة من localStorage
+        function fetchPosts() {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = '';
+
+            posts.forEach(post => {
+                displayPost(post);
+            });
+        }
+
+        // عرض منشور في الصفحة
+        function displayPost(post) {
+            const postsContainer = document.getElementById('postsContainer');
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+
+            let imageHTML = '';
+            if (post.image) {
+                imageHTML = `<img src="${post.image}" alt="Post Image" />`;
+            }
+
+            postDiv.innerHTML = `
+                <div class="author">${post.author}</div>
+                <p>${post.content}</p>
+                ${imageHTML}
+            `;
+            postsContainer.appendChild(postDiv);
+        }
+
+        // إضافة منشور جديد
+        function addPost() {
+            const author = document.getElementById('authorName').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const imageFile = document.getElementById('postImage').files[0];
+
+            if (author === '' || content === '') {
+                alert('يرجى ملء جميع الحقول المطلوبة!');
+                return;
+            }
+
+            const post = {
+                author: author,
+                content: content,
+                image: null
+            };
+
+            // تحميل الصورة إذا كانت موجودة
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    post.image = event.target.result; // حفظ الصورة في منشور
+                    savePost(post);
+                };
+                reader.readAsDataURL(imageFile); // قراءة الصورة وتحويلها إلى Data URL
+            } else {
+                savePost(post); // إذا لم يكن هناك صورة، احفظ النص فقط
+            }
+        }
+
+        // حفظ المنشور في localStorage
+        function savePost(post) {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            posts.push(post);
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            // مسح الحقول بعد النشر
+            document.getElementById('authorName').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postImage').value = '';
+
+            fetchPosts(); // تحديث المنشورات
+        }
+
+        // جلب المنشورات عند تحميل الصفحة
+        window.onload = fetchPosts;
+    </script>
+</body>
+</html>
