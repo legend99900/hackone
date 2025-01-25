@@ -104,12 +104,12 @@
             <button onclick="addPost()">نشر</button>
         </div>
         <div class="posts" id="postsContainer">
-            <!-- المشاركات ستظهر هنا -->
+            
         </div>
     </div>
 
     <script>
-        // جلب المنشورات المخزنة من localStorage
+        
         function fetchPosts() {
             const posts = JSON.parse(localStorage.getItem('posts')) || [];
             const postsContainer = document.getElementById('postsContainer');
@@ -120,7 +120,7 @@
             });
         }
 
-        // عرض منشور في الصفحة
+        
         function displayPost(post) {
             const postsContainer = document.getElementById('postsContainer');
             const postDiv = document.createElement('div');
@@ -139,7 +139,7 @@
             postsContainer.appendChild(postDiv);
         }
 
-        // إضافة منشور جديد
+        
         function addPost() {
             const author = document.getElementById('authorName').value.trim();
             const content = document.getElementById('postContent').value.trim();
@@ -156,7 +156,7 @@
                 image: null
             };
 
-            // تحميل الصورة إذا كانت موجودة
+            
             if (imageFile) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -169,21 +169,21 @@
             }
         }
 
-        // حفظ المنشور في localStorage
+        
         function savePost(post) {
             const posts = JSON.parse(localStorage.getItem('posts')) || [];
             posts.push(post);
             localStorage.setItem('posts', JSON.stringify(posts));
 
-            // مسح الحقول بعد النشر
+            
             document.getElementById('authorName').value = '';
             document.getElementById('postContent').value = '';
             document.getElementById('postImage').value = '';
 
-            fetchPosts(); // تحديث المنشورات
+            fetchPosts(); 
         }
 
-        // جلب المنشورات عند تحميل الصفحة
+        
         window.onload = fetchPosts;
     </script>
 </body>
