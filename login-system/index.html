@@ -160,12 +160,12 @@
             if (imageFile) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    post.image = event.target.result; // حفظ الصورة في منشور
+                    post.image = event.target.result; 
                     savePost(post);
                 };
-                reader.readAsDataURL(imageFile); // قراءة الصورة وتحويلها إلى Data URL
+                reader.readAsDataURL(imageFile); 
             } else {
-                savePost(post); // إذا لم يكن هناك صورة، احفظ النص فقط
+                savePost(post); 
             }
         }
 
